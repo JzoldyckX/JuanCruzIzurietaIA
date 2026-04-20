@@ -5,4 +5,4 @@ Juego: El juego se llama "P&F battle for the tri state area" y se ambienta en un
 
 Sistemas de ia implementados: Wander, Seek, Flee.
 
-Controles basicos: WASD: Movimiento, Mouse: Camara
+Controles basicos: WASD: Movimiento, Mouse: Camara.
