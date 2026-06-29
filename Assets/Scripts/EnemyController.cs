@@ -183,12 +183,12 @@ public class EnemyController : MonoBehaviour
             if (fsm.currentState == FSM.EnemyState.Pursuit)
             {
                 resultText.text = "Perdiste";
-                StartCoroutine(RestartGame(3f));
+                StartCoroutine(RestartGame(2f));
             }
             else
             {
                 resultText.text = "Ganaste";
-                StartCoroutine(RestartGame(5f));
+                SceneManager.LoadScene("Nivel2");
             }
         }
     }
