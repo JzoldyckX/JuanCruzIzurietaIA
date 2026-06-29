@@ -28,7 +28,7 @@ public class CowardAI : MonoBehaviour
     {
         if (escaping)
         {
-            // Mientras esté escapando, ignorar completamente al jugador
+            
 
             if (follower.HasFinishedPath())
             {
