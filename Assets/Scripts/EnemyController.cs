@@ -14,6 +14,8 @@ public class EnemyController : MonoBehaviour
     private LineOfSight los;
 
     [SerializeField]
+    private bool useDecisionTree;
+    private DecisionTree tree;
     private FSM fsm;
     private Animator animator;
     private Rigidbody rb;
@@ -51,8 +53,8 @@ public class EnemyController : MonoBehaviour
         if (los == null)
             los = GetComponent<LineOfSight>();
 
-        if (fsm == null)
-            fsm = GetComponent<FSM>();
+        fsm = GetComponent<FSM>();
+        tree = GetComponent<DecisionTree>();
     }
 
     void Start()
@@ -75,14 +77,33 @@ public class EnemyController : MonoBehaviour
             && los.isInAngle(transform, player)
             && los.hasLineOfSight(transform, player);
 
-        fsm.UpdateState(canSeePlayer, shouldFlee);
+        if (useDecisionTree)
+        {
+            tree.UpdateTree(canSeePlayer, shouldFlee);
+        }
+        else
+        {
+            fsm.UpdateState(canSeePlayer, shouldFlee);
+        }
+
 
         ExecuteState();
     }
 
     void ExecuteState()
     {
-        switch (fsm.currentState)
+        FSM.EnemyState state;
+
+        if (useDecisionTree)
+        {
+            state = (FSM.EnemyState)tree.currentState;
+        }
+        else
+        {
+            state = fsm.currentState;
+        }
+
+        switch (state)
         {
             case FSM.EnemyState.Patrol:
                 Patrol();
@@ -180,7 +201,14 @@ public class EnemyController : MonoBehaviour
             if (resultText != null)
                 resultText.gameObject.SetActive(true);
 
-            if (fsm.currentState == FSM.EnemyState.Pursuit)
+            FSM.EnemyState state;
+
+            if (useDecisionTree)
+                state = (FSM.EnemyState)tree.currentState;
+            else
+                state = fsm.currentState;
+
+            if (state == FSM.EnemyState.Pursuit)
             {
                 resultText.text = "Perdiste";
                 StartCoroutine(RestartGame(2f));

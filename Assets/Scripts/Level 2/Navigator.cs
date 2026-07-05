@@ -5,6 +5,10 @@ public class Navigator : MonoBehaviour
 {
     public static Navigator Instance;
 
+    [SerializeField] private bool useThetaStar = false;
+
+    [SerializeField] private LayerMask obstacleMask;
+
     private Node[] nodes;
 
     private void Awake()
@@ -31,15 +35,16 @@ public class Navigator : MonoBehaviour
 
         return closest;
     }
+
     public Node GetRandomNode()
     {
         return nodes[Random.Range(0, nodes.Length)];
     }
+
     public Node GetFarthestNode(Vector3 playerPosition, Vector3 enemyPosition)
     {
         Node bestNode = null;
         float bestScore = float.MinValue;
-
 
         Vector3 escapeDirection = (enemyPosition - playerPosition).normalized;
 
@@ -47,9 +52,7 @@ public class Navigator : MonoBehaviour
         {
             Vector3 toNode = (node.transform.position - enemyPosition).normalized;
 
-
             float directionScore = Vector3.Dot(escapeDirection, toNode);
-
             float distanceScore = Vector3.Distance(node.transform.position, playerPosition);
 
             float score = directionScore * 100f + distanceScore;
@@ -63,6 +66,7 @@ public class Navigator : MonoBehaviour
 
         return bestNode;
     }
+
     public List<Node> FindPath(Vector3 start, Vector3 end)
     {
         Node startNode = GetClosestNode(start);
@@ -71,13 +75,31 @@ public class Navigator : MonoBehaviour
         if (startNode == null || endNode == null)
             return new List<Node>();
 
-        return AStar.Run(
-            startNode,
-            node => node == endNode,
-            node => node.neighbours,
-            (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
-            node => Vector3.Distance(node.transform.position, endNode.transform.position)
-        );
+        if (useThetaStar)
+        {
+            return ThetaStar.Run(
+                startNode,
+                node => node == endNode,
+                node => node.neighbours,
+                (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
+                node => Vector3.Distance(node.transform.position, endNode.transform.position),
+                obstacleMask
+            );
+        }
+        else
+        {
+            return AStar.Run(
+                startNode,
+                node => node == endNode,
+                node => node.neighbours,
+                (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
+                node => Vector3.Distance(node.transform.position, endNode.transform.position)
+            );
+        }
     }
 
+    public bool UsingThetaStar()
+    {
+        return useThetaStar;
+    }
 }

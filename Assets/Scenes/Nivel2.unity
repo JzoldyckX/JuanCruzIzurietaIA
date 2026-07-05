@@ -4623,6 +4623,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78ceea36da1bbe549ae2154fcab945b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useThetaStar: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!4 &1747477615
 Transform:
   m_ObjectHideFlags: 0

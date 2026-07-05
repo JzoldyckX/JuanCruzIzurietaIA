@@ -38,7 +38,15 @@ public class Node : MonoBehaviour
             }
         }
     }
+    public bool HasLineOfSight(Node other, LayerMask obstacleMask)
+    {
+        Vector3 start = transform.position + Vector3.up * 0.2f;
+        Vector3 end = other.transform.position + Vector3.up * 0.2f;
 
+        Vector3 dir = end - start;
+
+        return !Physics.Raycast(start, dir.normalized, dir.magnitude, obstacleMask);
+    }
     private void OnDrawGizmos()
     {
 

@@ -1174,7 +1174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1095450281}
   los: {fileID: 1090712231}
-  fsm: {fileID: 1090712230}
+  useDecisionTree: 1
   speed: 3
   rotationSpeed: 5
   shouldFlee: 0
@@ -1254,6 +1254,19 @@ CapsuleCollider:
   m_Height: 2.86
   m_Direction: 1
   m_Center: {x: 0, y: 0.84, z: 0}
+--- !u!114 &1090712238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090712226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e75840113bbaa4a4ca51bb2810f1c08a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
 --- !u!1 &1095450280 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c79a0dd2988b63c409665cdce331e52a, type: 3}
@@ -1524,6 +1537,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1999c7e37630a5f4a90f821ff6f1c6ba, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1090712237}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1999c7e37630a5f4a90f821ff6f1c6ba, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090712238}
   m_SourcePrefab: {fileID: 100100000, guid: 1999c7e37630a5f4a90f821ff6f1c6ba, type: 3}
 --- !u!1 &1402470554
 GameObject:

@@ -68,8 +68,10 @@
     <Compile Include="Assets\Scripts\FSM.cs" />
     <Compile Include="Assets\Scripts\Level 2\AStar.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Level 2\TethaStar.cs" />
     <Compile Include="Assets\Scripts\Level 2\HunterAi.cs" />
     <Compile Include="Assets\Scripts\PathFollower.cs" />
+    <Compile Include="Assets\Scripts\DecisionTree.cs" />
     <Compile Include="Assets\Scripts\Level 2\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Level 2\Exit.cs" />
