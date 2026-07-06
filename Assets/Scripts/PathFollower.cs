@@ -43,6 +43,15 @@ public class PathFollower : MonoBehaviour
         directMovement = false;
     }
 
+    // Nuevo: detiene absolutamente cualquier movimiento y limpia el path actual
+    public void StopAllMovement()
+    {
+        directMovement = false;
+        if (currentPath != null)
+            currentPath.Clear();
+        currentIndex = 0;
+    }
+
     public bool HasFinishedPath()
     {
         return currentIndex >= currentPath.Count;

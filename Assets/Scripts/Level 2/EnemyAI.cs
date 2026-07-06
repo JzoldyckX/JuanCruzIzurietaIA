@@ -7,6 +7,7 @@ public class EnemyAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform player;
     [SerializeField] private LineOfSight lineOfSight;
+    [SerializeField] private bool Theta;
 
     private PathFollower follower;
 
@@ -72,7 +73,8 @@ public class EnemyAI : MonoBehaviour
         List<Node> path =
             Navigator.Instance.FindPath(
                 transform.position,
-                randomNode.transform.position);
+                randomNode.transform.position,
+                Theta);
 
         follower.SetPath(path);
     }

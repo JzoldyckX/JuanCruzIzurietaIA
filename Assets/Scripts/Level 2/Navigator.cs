@@ -5,7 +5,7 @@ public class Navigator : MonoBehaviour
 {
     public static Navigator Instance;
 
-    [SerializeField] private bool useThetaStar = false;
+
 
     [SerializeField] private LayerMask obstacleMask;
 
@@ -67,7 +67,7 @@ public class Navigator : MonoBehaviour
         return bestNode;
     }
 
-    public List<Node> FindPath(Vector3 start, Vector3 end)
+    public List<Node> FindPath(Vector3 start, Vector3 end, bool useThetaStar = false)
     {
         Node startNode = GetClosestNode(start);
         Node endNode = GetClosestNode(end);
@@ -98,8 +98,5 @@ public class Navigator : MonoBehaviour
         }
     }
 
-    public bool UsingThetaStar()
-    {
-        return useThetaStar;
-    }
+
 }

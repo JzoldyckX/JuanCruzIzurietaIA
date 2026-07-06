@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(PathFollower))]
+[RequireComponent(typeof(CowardFSM))]
 public class CowardAI : MonoBehaviour
 {
     [Header("References")]
@@ -9,16 +9,21 @@ public class CowardAI : MonoBehaviour
     [SerializeField] private LineOfSight lineOfSight;
 
     private PathFollower follower;
+    private CowardFSM fsm;
+
+    [Header("Pathfinding")]
+    [SerializeField] private float repathTime = 0.5f;
+    [SerializeField] private bool useThetaStar = false;
+
+    private float timer;
+
+
     private bool escaping = false;
-
-
-    [SerializeField]
-    private float repathTime = 0.5f;
-
 
     private void Awake()
     {
         follower = GetComponent<PathFollower>();
+        fsm = GetComponent<CowardFSM>();
 
         if (lineOfSight == null)
             lineOfSight = GetComponent<LineOfSight>();
@@ -28,16 +33,12 @@ public class CowardAI : MonoBehaviour
     {
         if (escaping)
         {
-            
-
             if (follower.HasFinishedPath())
             {
                 escaping = false;
             }
-            else
-            {
-                return;
-            }
+
+            return;
         }
 
         bool canSeePlayer =
@@ -45,18 +46,24 @@ public class CowardAI : MonoBehaviour
             lineOfSight.isInAngle(transform, player) &&
             lineOfSight.hasLineOfSight(transform, player);
 
-        if (canSeePlayer)
-        {
-            escaping = true;
 
-            EnemyManager.Instance.AlertHunter(player.position);
+        fsm.UpdateState(canSeePlayer);
 
-            EscapeNow();
+        timer += Time.deltaTime;
 
+        if (timer < repathTime)
             return;
-        }
 
-        Patrol();
+        timer = 0;
+
+        if (fsm.IsEscaping())
+        {
+            EscapeNow();
+        }
+        else
+        {
+            Patrol();
+        }
     }
 
     void Patrol()
@@ -71,13 +78,18 @@ public class CowardAI : MonoBehaviour
         follower.SetPath(
             Navigator.Instance.FindPath(
                 transform.position,
-                randomNode.transform.position
+                randomNode.transform.position,
+                useThetaStar
             )
         );
     }
 
     void EscapeNow()
     {
+        escaping = true;
+
+        EnemyManager.Instance.AlertHunter(player.position);
+
         Node safeNode = Navigator.Instance.GetFarthestNode(
             player.position,
             transform.position
@@ -86,7 +98,8 @@ public class CowardAI : MonoBehaviour
         follower.SetPath(
             Navigator.Instance.FindPath(
                 transform.position,
-                safeNode.transform.position
+                safeNode.transform.position,
+                useThetaStar
             )
         );
     }

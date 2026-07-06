@@ -7,10 +7,9 @@ public class HunterAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform player;
     [SerializeField] private LineOfSight lineOfSight;
-
+    [SerializeField] private bool Theta;
     private PathFollower follower;
 
-    private bool chasing = false;
     private bool investigating = false;
 
     private Vector3 alertPosition;
@@ -20,8 +19,22 @@ public class HunterAI : MonoBehaviour
 
     private float timer;
 
+    [SerializeField] private bool useDecisionTree;
+
+    private HunterDecisionTree tree;
+
+    private enum HunterState
+    {
+        Patrol,
+        Chase,
+        Recalculate
+    }
+
+    private HunterState currentState;
+
     private void Awake()
     {
+        tree = GetComponent<HunterDecisionTree>();  
         follower = GetComponent<PathFollower>();
 
         if (lineOfSight == null)
@@ -41,24 +54,37 @@ public class HunterAI : MonoBehaviour
             lineOfSight.isInAngle(transform, player) &&
             lineOfSight.hasLineOfSight(transform, player);
 
-        if (canSeePlayer)
+        if (useDecisionTree)
         {
-            chasing = true;
-            investigating = false;
+            tree.UpdateTree(canSeePlayer);
+
+            currentState = tree.currentState == HunterDecisionTree.HunterState.Chase
+                ? HunterState.Chase
+                : (tree.currentState == HunterDecisionTree.HunterState.Recalculate ? HunterState.Recalculate : HunterState.Patrol);
         }
-        else if (chasing)
+        else
         {
-            chasing = false;
-            follower.StopDirectMovement();
+            if (canSeePlayer)
+                currentState = HunterState.Chase;
+            else
+                currentState = HunterState.Patrol;
         }
 
-        if (chasing)
+
+        if (currentState == HunterState.Recalculate)
+        {
+            follower.StopDirectMovement();
+            return;
+        }
+
+
+        if (currentState == HunterState.Chase)
         {
             follower.MoveTowards(player.position);
             return;
         }
 
-        timer += Time.deltaTime;
+        timer += Time.deltaTime;    
 
         if (timer < repathTime)
             return;
@@ -73,7 +99,8 @@ public class HunterAI : MonoBehaviour
             follower.SetPath(
                 Navigator.Instance.FindPath(
                     transform.position,
-                    alertPosition
+                    alertPosition,
+                    Theta
                 )
             );
 
@@ -97,7 +124,8 @@ public class HunterAI : MonoBehaviour
         follower.SetPath(
             Navigator.Instance.FindPath(
                 transform.position,
-                randomNode.transform.position
+                randomNode.transform.position,
+                Theta
             )
         );
     }
